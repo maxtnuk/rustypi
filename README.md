@@ -1,4 +1,4 @@
 # rustypi
 this repo is rust os in raspberry pi  
 
-still working 
+Now i just learn from rust-raspi3-OS-tutorials
