@@ -5,6 +5,7 @@ cache: cargo
 before_cache:
   - rm -rf "$TRAVIS_HOME/.cargo/registry/src"
 script:
+  - rustup component add rust-src 
   - cargo install cargo-xbuild
   - cargo install bootimage --version "^0.5.0"
   - cargo xbuild --target kernel.json
