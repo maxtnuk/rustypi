@@ -1,0 +1,11 @@
+language: rust
+rust:
+  - nightly
+cache: cargo
+before_cache:
+  - rm -rf "$TRAVIS_HOME/.cargo/registry/src"
+script:
+  - cargo install cargo-xbuild
+  - cargo install bootimage --version "^0.5.0"
+  - cargo xbuild --target kernel.json
+  - bootimage build --target kernel.json
