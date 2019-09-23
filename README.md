@@ -1,4 +1,4 @@
 # rustypi
-this repo is rust os in raspberry pi  
+here is testing branch (Do not use brach)
 
-Now i just learn from rust-raspi3-OS-tutorials
+if it is stable and executable, then merging to master branch  
