@@ -17,3 +17,5 @@ bootloader_precompiled = "0.2.0"
 
 [package.metadata.bootimage]
 default-target = "kernel.json"
+
+run-command = ["qemu-system-x86_64", "-drive", "format=raw,file={}"]
