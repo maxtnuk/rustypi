@@ -12,7 +12,7 @@ services:
     volumes:
       - ".:/work"
     working_dir: /work
-    command: qemu-system-aarch64 -M raspi3 -drive format=raw,file=${KERNEL_FILE} -d in_asm -vnc :0
+    command: qemu-system-aarch64 -M raspi3 -drive format=raw,file=${KERNEL_FILE} -vnc :0
 networks:
   qemu_network:
     ipam:
