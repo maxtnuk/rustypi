@@ -1,9 +1,9 @@
 language: rust
+
 rust:
   - nightly
 cache: cargo
-before_cache:
-  - rm -rf "$TRAVIS_HOME/.cargo/registry/src"
+
 script:
   - rustup component add rust-src || echo "rust-src already on"
   - cargo install cargo-xbuild || echo "cargo-xbuild already on"

@@ -1,6 +1,10 @@
 Cargo.lock
 target
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 log
 >>>>>>> Stashed changes
+=======
+log
+>>>>>>> 2ad2c8c... Add docker_run for loging qemu
