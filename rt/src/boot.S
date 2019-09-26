@@ -30,4 +30,4 @@
 
 _boot_cores:
 1:  wfe
-    b       1b
+b       1b
