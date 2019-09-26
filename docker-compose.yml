@@ -12,7 +12,7 @@ services:
     volumes:
       - ".:/work"
     working_dir: /work
-    command: qemu-system-aarch64 -M raspi3 -drive format=raw,file=${RUSTYPI} -vnc :0 -d in_asm
+    command: qemu-system-aarch64 -M raspi3 -gdb tcp::3333 -drive format=raw,file=${RUSTYPI} -vnc :0 -d in_asm
 
   x86_64:
     image:  maxtnt/qemu-tester
@@ -26,7 +26,7 @@ services:
     volumes:
       - ".:/work"
     working_dir: /work
-    command: qemu-system-x86_64 -drive format=raw,file=${X86_64} -vnc :0 -d in_asm
+    command: qemu-system-x86_64 -gdb tcp::3333 -drive format=raw,file=${X86_64} -vnc :0 -d in_asm
 networks:
   qemu_network:
     ipam:
