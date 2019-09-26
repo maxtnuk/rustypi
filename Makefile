@@ -7,7 +7,7 @@ boot_image:
 	cargo xbuild --target $(X86_64_JSON)
 
 objdump:
-	cargo objdump --target $(TARGET) -- -d -no-show-raw-insn -print-imm-hex $(TARGET_PATH)
+	cargo objdump --target $(TARGET) -- -d -no-show-raw-insn $(TARGET_PATH)
 
 size:
 	cargo size --target $(TARGET) $(TARGET_PATH)
