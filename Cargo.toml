@@ -19,4 +19,5 @@ panic = "abort"
 
 [dependencies]
 bootloader_precompiled = "0.2.0"
+register = "0.3.3"
 rt={ path= "rt", version="0.1.0"}
