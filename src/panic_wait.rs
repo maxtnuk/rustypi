@@ -6,8 +6,14 @@
 
 use crate::cpu;
 use core::panic::PanicInfo;
+use crate::println;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
+    if let Some(args) = _info.message() {
+        println!("\nKernel panic: {}", args);
+    } else {
+        println!("\nKernel panic!");
+    }
     cpu::wait_forever()
 }

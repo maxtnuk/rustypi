@@ -85,6 +85,8 @@
 //! - `crate::memory::*`
 //! - `crate::bsp::memory::*`
 
+#![feature(format_args_nl)]
+#![feature(panic_info_message)]
 #![feature(global_asm)]
 #![feature(llvm_asm)]
 #![no_main]
@@ -97,7 +99,10 @@ mod cpu;
 mod panic_wait;
 mod runtime_init;
 mod memory;
+mod console;
+mod print;
 
 unsafe fn kernel_init() -> !{
-    panic!()
+    println!("[0] Hello from Rust!");
+    panic!("Stopping here.")
 }

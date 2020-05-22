@@ -1,5 +1,6 @@
 use core::ops::Range;
 
+
 pub unsafe fn zero_volatile<T>(range: Range<*mut T>)
 where T: From<u8>{
     let mut ptr= range.start;
