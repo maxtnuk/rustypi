@@ -28,7 +28,9 @@ endif
 export LINKER_FILE
 
 RUSTFLAGS          = -C link-arg=-T$(LINKER_FILE) $(RUSTC_MISC_ARGS)
-RUSTFLAGS_PEDANTIC = $(RUSTFLAGS) -D warnings -D missing_docs
+RUSTFLAGS_PEDANTIC = $(RUSTFLAGS) \
+			-D missing_docs \
+			-D warnings
 
 COMPILER_ARGS = --target=$(TARGET) \
     --features bsp_$(BSP)          \

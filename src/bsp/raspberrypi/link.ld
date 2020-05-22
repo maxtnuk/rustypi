@@ -1,13 +1,31 @@
-ENTRY(_boot_cores);
-
 SECTIONS
 {
+    /* Set current address to the value from which the RPi starts execution */
     . = 0x80000;
 
     .text :
     {
-        KEEP(*(.text.boot)) *(.text .text.*)
+        *(.text._start) *(.text*)
     }
 
-    /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }
+    .rodata :
+    {
+        *(.rodata*)
+    }
+
+    .data :
+    {
+        *(.data*)
+    }
+
+    /* Section is zeroed in u64 chunks, align start and end to 8 bytes */
+    .bss ALIGN(8):
+    {
+        __bss_start = .;
+        *(.bss*);
+        . = ALIGN(8);
+        __bss_end = .;
+    }
+
+    /DISCARD/ : { *(.comment*) }
 }
