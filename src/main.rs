@@ -87,8 +87,7 @@
 
 #![feature(format_args_nl)]
 #![feature(panic_info_message)]
-#![feature(global_asm)]
-#![feature(llvm_asm)]
+#![feature(naked_functions)]
 #![no_main]
 #![no_std]
 
@@ -103,6 +102,7 @@ mod console;
 mod print;
 
 unsafe fn kernel_init() -> !{
-    println!("[0] Hello from Rust!");
-    panic!("Stopping here.")
+    println!("[0] Hello from pure Rust!");
+
+    cpu::wait_forever()
 }
