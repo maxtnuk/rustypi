@@ -88,6 +88,7 @@
 #![feature(format_args_nl)]
 #![feature(panic_info_message)]
 #![feature(naked_functions)]
+#![feature(trait_alias)]
 #![no_main]
 #![no_std]
 
@@ -100,9 +101,19 @@ mod runtime_init;
 mod memory;
 mod console;
 mod print;
+mod synchronization;
+
 
 unsafe fn kernel_init() -> !{
+    use console::interface::Statistics;
+
     println!("[0] Hello from pure Rust!");
 
+    println!(
+        "[1] Chars written: {}",
+        bsp::console::console().chars_written()
+    );
+
+    println!("[2] Stopping here.");
     cpu::wait_forever()
 }
