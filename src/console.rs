@@ -5,6 +5,8 @@ pub mod interface{
         fn write_char(&self, c: char);
 
         fn write_fmt(&self, args: fmt::Arguments) -> fmt::Result;
+
+        fn flush(&self);
     }
 
     pub trait Read {
@@ -12,6 +14,8 @@ pub mod interface{
         fn read_char(&self) -> char {
             ' '
         }
+
+        fn clear(&self);
     }
 
     pub trait Statistics{

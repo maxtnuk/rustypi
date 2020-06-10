@@ -103,6 +103,7 @@ mod console;
 mod print;
 mod synchronization;
 mod driver;
+mod relocate;
 
 
 unsafe fn kernel_init() -> !{
@@ -121,39 +122,40 @@ unsafe fn kernel_init() -> !{
 }
 
 fn kernel_main() -> !{
+    use bsp::console::console;
     use console::interface::All;
-    use driver::interface::DriverManager;
 
     // Wait for user to hit Enter.
-    loop {
-        if bsp::console::console().read_char() == 'i' {
-            break;
+    println!("{:^37}", bsp::board_name());
+    println!();
+    println!("[ML] Requesting binary");
+    console().flush();
+
+    console().clear();
+
+    for _ in 0..3 {
+        console().write_char(3 as char);
+    }
+
+    let mut size: u32 = u32::from(console().read_char() as u8);
+    size |= u32::from(console().read_char() as u8) << 8;
+    size |= u32::from(console().read_char() as u8) << 16;
+    size |= u32::from(console().read_char() as u8) << 24;
+
+    console().write_char('O');
+    console().write_char('K');
+
+    let kernel_addr: *mut u8 = bsp::cpu::BOARD_DEFAULT_LOAD_ADDRESS as *mut u8;
+    unsafe {
+        // Read the kernel byte by byte.
+        for i in 0..size {
+            *kernel_addr.offset(i as isize) = console().read_char() as u8;
         }
     }
 
-    println!("[0] Booting on: {}", bsp::board_name());
+    println!("[ML] Loaded! Executing the payload now\n");
+    console().flush();
 
-    println!("[1] Drivers loaded:");
-    for (i, driver) in bsp::driver::driver_manager()
-        .all_device_drivers()
-        .iter()
-        .enumerate()
-    {
-        println!("      {}. {}", i + 1, driver.compatible());
-    }
-
-    println!(
-        "[2] Chars written: {}",
-        bsp::console::console().chars_written()
-    );
-    println!("[3] Echoing input now");
-
-    loop {
-        let c = bsp::console::console().read_char();
-        if c=='\r'{
-            bsp::console::console().write_char('\n');
-        }
-        bsp::console::console().write_char(c);
-       
-    }
+    let kernel: extern "C" fn() -> ! = unsafe { core::mem::transmute(kernel_addr as *const ()) };
+    kernel()
 }

@@ -5,6 +5,9 @@
 # Default to the RPi3
 BSP= rpi3
 
+DEV_SERIAL ?= /dev/ttyUSB0
+UNAME_S = $(shell uname -s)
+
 # BSP-specific arguments
 ifeq ($(BSP),rpi3)
     TARGET            = aarch64-unknown-none-softfloat
@@ -13,15 +16,17 @@ ifeq ($(BSP),rpi3)
     QEMU_MACHINE_TYPE = raspi3
     QEMU_RELEASE_ARGS = -serial stdio -display none
     LINKER_FILE       = src/bsp/raspberrypi/link.ld
-    RUSTC_MISC_ARGS   = -C target-cpu=cortex-a53
+    RUSTC_MISC_ARGS   = -C target-cpu=cortex-a53 -C relocation-model=pic
+    CHAINBOOT_DEMO_PAYLOAD = demo_payload_rpi3.img
 else ifeq ($(BSP),rpi4)
     TARGET            = aarch64-unknown-none-softfloat
     KERNEL_BIN        = kernel8.img
     QEMU_BINARY       = qemu-system-aarch64
-    QEMU_MACHINE_TYPE =
+    QEMU_MACHINE_TYPE = raspi4
     QEMU_RELEASE_ARGS = -serial stdio -display none
     LINKER_FILE       = src/bsp/raspberrypi/link.ld
-    RUSTC_MISC_ARGS   = -C target-cpu=cortex-a72
+    RUSTC_MISC_ARGS   = -C target-cpu=cortex-a72 -C relocation-model=pic
+    CHAINBOOT_DEMO_PAYLOAD = demo_payload_rpi3.img
 endif
 
 # Export for build.rs
@@ -48,12 +53,22 @@ KERNEL_ELF = target/$(TARGET)/release/rustypi
 
 DOCKER_IMAGE         = rustembedded/osdev-utils
 DOCKER_CMD           = docker run -it --rm -v $(shell pwd):/work/tutorial -w /work/tutorial
+DOCKER_ARG_DIR_UTILS = -v $(shell pwd)/../utils:/work/utils
+DOCKER_ARG_DEV       = --privileged -v /dev:/dev
 
 DOCKER_QEMU = $(DOCKER_CMD) $(DOCKER_IMAGE)
 
-EXEC_QEMU = $(QEMU_BINARY) -M $(QEMU_MACHINE_TYPE)
+ifeq ($(UNAME_S),Linux)
+    DOCKER_CMD_DEV = $(DOCKER_CMD) $(DOCKER_ARG_DEV)
 
-.PHONY: all $(KERNEL_ELF) $(KERNEL_BIN) doc qemu clippy clean readelf objdump nm check
+    DOCKER_CHAINBOOT = $(DOCKER_CMD_DEV) $(DOCKER_ARG_DIR_UTILS) $(DOCKER_IMAGE)
+endif
+
+EXEC_QEMU     = $(QEMU_BINARY) -M $(QEMU_MACHINE_TYPE)
+EXEC_MINIPUSH = ruby utils/minipush.rb
+
+.PHONY: all $(KERNEL_ELF) $(KERNEL_BIN) doc qemu qemuasm chainboot clippy clean readelf objdump nm \
+    check
 
 all: $(KERNEL_BIN)
 
@@ -67,12 +82,17 @@ doc:
 	$(DOC_CMD) --document-private-items --open
 
 ifeq ($(QEMU_MACHINE_TYPE),)
-qemu:
+qemu qemuasm:
 	@echo "This board is not yet supported for QEMU."
 else
 qemu: $(KERNEL_BIN)
 	@$(DOCKER_QEMU) $(EXEC_QEMU) $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN)
+qemuasm: $(KERNEL_BIN)
+	@$(DOCKER_QEMU) $(EXEC_QEMU) $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN) -d in_asm
 endif
+
+chainboot:
+	@$(DOCKER_CHAINBOOT) $(EXEC_MINIPUSH) $(DEV_SERIAL) $(CHAINBOOT_DEMO_PAYLOAD)
 
 clippy:
 	RUSTFLAGS="$(RUSTFLAGS_PEDANTIC)" $(CLIPPY_CMD)

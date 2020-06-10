@@ -1,6 +1,24 @@
-
 use core::ops::Range;
 use crate::memory;
+
+pub trait RunTimeInit {
+    unsafe fn runtime_init(&self) -> ! {
+        zero_bss();
+
+        crate::kernel_init()
+    }
+}
+
+struct Traitor;
+
+impl RunTimeInit for Traitor{
+    unsafe fn runtime_init(&self) -> ! {
+        zero_bss();
+
+        crate::kernel_init()
+    }
+    
+}
 
 unsafe fn bss_range() -> Range<*mut usize>{
     extern "C" {
@@ -19,9 +37,6 @@ unsafe fn zero_bss(){
     memory::zero_volatile(bss_range());
 }
 
-#[no_mangle]
-pub unsafe fn runtime_init() -> !{
-    zero_bss();
-
-    crate::kernel_init()
+pub fn get() -> &'static dyn RunTimeInit {
+    &Traitor {}
 }
