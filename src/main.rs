@@ -95,18 +95,17 @@
 // `mod cpu` provides the `_start()` function, the first function to run.
 
 mod bsp;
-mod cpu;
-mod panic_wait;
-mod runtime_init;
-mod memory;
 mod console;
-mod print;
-mod synchronization;
+mod cpu;
 mod driver;
+mod memory;
+mod panic_wait;
+mod print;
 mod relocate;
+mod runtime_init;
+mod synchronization;
 
-
-unsafe fn kernel_init() -> !{
+unsafe fn kernel_init() -> ! {
     use driver::interface::DriverManager;
 
     for i in bsp::driver::driver_manager().all_device_drivers().iter() {
@@ -121,7 +120,7 @@ unsafe fn kernel_init() -> !{
     kernel_main()
 }
 
-fn kernel_main() -> !{
+fn kernel_main() -> ! {
     use bsp::console::console;
     use console::interface::All;
 

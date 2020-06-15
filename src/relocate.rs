@@ -1,6 +1,6 @@
-use crate::{bsp,runtime_init};
+use crate::{bsp, runtime_init};
 
-pub unsafe fn relocate_fn<T>() -> !{
+pub unsafe fn relocate_fn<T>() -> ! {
     extern "C" {
         static __binary_start: usize;
         static __binary_end: usize;

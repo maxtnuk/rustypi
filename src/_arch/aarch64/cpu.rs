@@ -1,6 +1,6 @@
 use crate::{bsp, cpu};
+pub use asm::{nop, wfe};
 use cortex_a::{asm, regs::*};
-pub use asm::{nop,wfe};
 
 #[naked]
 #[no_mangle]

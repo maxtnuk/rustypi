@@ -1,4 +1,3 @@
-
 mod bcm2xxx_gpio;
 mod bcm2xxx_pl011_uart;
 

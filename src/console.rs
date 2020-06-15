@@ -1,7 +1,7 @@
-pub mod interface{
+pub mod interface {
     use core::fmt;
 
-    pub trait Write{
+    pub trait Write {
         fn write_char(&self, c: char);
 
         fn write_fmt(&self, args: fmt::Arguments) -> fmt::Result;
@@ -18,7 +18,7 @@ pub mod interface{
         fn clear(&self);
     }
 
-    pub trait Statistics{
+    pub trait Statistics {
         fn chars_written(&self) -> usize {
             0
         }
@@ -27,6 +27,5 @@ pub mod interface{
         }
     }
 
-    pub trait All = Write + Read+Statistics;
-
+    pub trait All = Write + Read + Statistics;
 }

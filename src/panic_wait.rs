@@ -25,8 +25,6 @@ macro_rules! panic_println {
     })
 }
 
-
-
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     if let Some(args) = _info.message() {

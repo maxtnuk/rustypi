@@ -210,7 +210,7 @@ impl fmt::Write for PL011UartInner {
     fn write_str(&mut self, s: &str) -> fmt::Result {
         for c in s.chars() {
             self.write_char(c);
-            if c=='\n'{
+            if c == '\n' {
                 self.write_char('\r');
             }
         }
@@ -233,8 +233,8 @@ impl PL011Uart {
 //------------------------------------------------------------------------------
 // OS Interface Code
 //------------------------------------------------------------------------------
-use synchronization::interface::Mutex;
 use core::fmt::Write;
+use synchronization::interface::Mutex;
 
 impl driver::interface::DeviceDriver for PL011Uart {
     fn compatible(&self) -> &str {
@@ -293,10 +293,10 @@ impl console::interface::Read for PL011Uart {
         })
     }
 
-    fn clear(&self){
-        let mut r= &self.inner;
-        r.lock(|inner|{
-            while !inner.FR.matches_all(FR::RXFE::SET){
+    fn clear(&self) {
+        let mut r = &self.inner;
+        r.lock(|inner| {
+            while !inner.FR.matches_all(FR::RXFE::SET) {
                 inner.DR.get();
             }
         })

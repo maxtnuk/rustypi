@@ -2,8 +2,8 @@ use core::ops::Deref;
 
 use register::{mmio::*, register_bitfields, register_structs};
 
-use crate::{cpu, driver, synchronization::NullLock};
 use crate::synchronization::interface::Mutex;
+use crate::{cpu, driver, synchronization::NullLock};
 
 register_bitfields! {
     u32,
@@ -59,28 +59,24 @@ register_structs! {
 }
 
 struct GPIOInner {
-    base_addr: usize
+    base_addr: usize,
 }
 
 pub struct GPIO {
-    inner: NullLock<GPIOInner>
+    inner: NullLock<GPIOInner>,
 }
 
 impl Deref for GPIOInner {
     type Target = RegisterBlock;
 
     fn deref(&self) -> &Self::Target {
-        unsafe {
-            &*self.ptr()
-        }
+        unsafe { &*self.ptr() }
     }
 }
 
 impl GPIOInner {
     const fn new(base_addr: usize) -> Self {
-        Self {
-            base_addr
-        }
+        Self { base_addr }
     }
 
     fn ptr(&self) -> *const RegisterBlock {
@@ -91,7 +87,7 @@ impl GPIOInner {
 impl GPIO {
     pub const unsafe fn new(base_addr: usize) -> Self {
         Self {
-            inner: NullLock::new(GPIOInner::new(base_addr))
+            inner: NullLock::new(GPIOInner::new(base_addr)),
         }
     }
 

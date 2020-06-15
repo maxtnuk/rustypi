@@ -2,8 +2,8 @@ use cortex_a::regs::*;
 
 #[inline(always)]
 pub fn core_id<T>() -> T
-    where
-        T: From<u8>,
+where
+    T: From<u8>,
 {
     const CORE_MASK: u64 = 0b11;
 
